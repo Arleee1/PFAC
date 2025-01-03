@@ -764,7 +764,7 @@ __global__ void PFAC_reduce_kernel_device(
     }
     int k = 0 ;
     unsigned int match_pattern ;
-    MANUAL_EXPAND_8( match_pattern = __ballot( match[k] > 0 ); \
+    MANUAL_EXPAND_8( match_pattern = __ballot_sync(__activemask(),  match[k] > 0 ); \
         match_pattern <<= (31-lane_id); \
         acc_pos[k] = __popc(match_pattern); \
         if ( 31 == lane_id ){ \
@@ -966,7 +966,7 @@ __global__ void PFAC_reduce_kernel_device(
 [code]
     #pragma unroll
     for(int k = 0 ; k < 4*NUM_INTS_PER_THREAD ; k++ ){
-        unsigned int match_pattern = __ballot( match[k] > 0 ) ;
+        unsigned int match_pattern = __ballot_sync(__activemask(),  match[k] > 0 ) ;
         match_pattern <<= (31 - lane_id);
         acc_pos[k] = __popc(match_pattern) ;
         if ( 31 == lane_id ){  
@@ -980,7 +980,7 @@ __global__ void PFAC_reduce_kernel_device(
 [code]
     int k = 0 ;
     unsigned int match_pattern ;
-    MANUAL_EXPAND_8( match_pattern = __ballot( match[k] > 0 ); \
+    MANUAL_EXPAND_8( match_pattern = __ballot_sync(__activemask(),  match[k] > 0 ); \
         match_pattern <<= (31-lane_id); \
         acc_pos[k] = __popc(match_pattern); \
         if ( 31 == lane_id ){ \
