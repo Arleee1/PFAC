@@ -25,6 +25,8 @@
  *
  */
 
+// Modified by Arleee1 (Ethan Ermovick) to update all __ballot() calls to __ballot_sync() to run on sm_70 and higher GPUs
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1120,7 +1122,7 @@ __global__ void PFAC_reduce_space_driven_device(
     }
     int k = 0 ;
     unsigned int match_pattern ;
-    MANUAL_EXPAND_8( match_pattern = __ballot( match[k] > 0 ); \
+    MANUAL_EXPAND_8( match_pattern = __ballot_sync(-1,  match[k] > 0 ); \
         match_pattern <<= (31-lane_id); \
         acc_pos[k] = __popc(match_pattern); \
         if ( 31 == lane_id ){ \
