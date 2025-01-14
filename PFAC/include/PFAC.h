@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+
 #include <stdio.h>
 
 #ifndef PFAC_H_
@@ -177,7 +179,7 @@ PFAC_status_t  PFAC_readPatternFromFile( PFAC_handle_t handle, char *filename ) 
  *  
  */
 PFAC_status_t  PFAC_matchFromDevice( PFAC_handle_t handle, char *d_inputString, size_t size,
-    int *d_matched_result ) ;
+    int *d_matched_result, float* time_elapsed_result ) ;
 
 
 /*
@@ -196,7 +198,7 @@ PFAC_status_t  PFAC_matchFromDevice( PFAC_handle_t handle, char *d_inputString, 
  *  
  */
 PFAC_status_t  PFAC_matchFromHost( PFAC_handle_t handle, char *h_inputString, size_t size,
-    int *h_matched_result ) ;
+    int *h_matched_result, float* time_elapsed_result ) ;
 
 /*
  *  return

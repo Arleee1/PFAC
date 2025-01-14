@@ -25,6 +25,8 @@
  *  Note: time-efficient version is used.
  *  
  */
+
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
  
  
 #include <stdio.h>
@@ -301,10 +303,10 @@ void profile_PFAC( PFAC_handle_t handle, char *h_inputString, int input_size,
 
     if (HOST_ON){
         PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size,
-            h_matched_result ) ;
+            h_matched_result, nullptr ) ;
     }else{
         PFAC_status = PFAC_matchFromDevice( handle, d_input_string, input_size,
-            d_matched_result ) ;
+            d_matched_result, nullptr ) ;
     }
     
     if ( PFAC_STATUS_SUCCESS != PFAC_status ){

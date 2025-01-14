@@ -31,7 +31,10 @@
  *      or segmentation fault occurs at run-time
  *      for example, /usr/lib64 on Fedora x86_64
  *
- */ 
+ */
+
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -366,7 +369,7 @@ int main(int argc, char **argv)
                 exit(1) ;
             }   
             
-            PFAC_status = PFAC_matchFromDevice( handle, d_input_string, num_chars, d_matched_result ) ;
+            PFAC_status = PFAC_matchFromDevice( handle, d_input_string, num_chars, d_matched_result, nullptr ) ;
             if ( PFAC_STATUS_SUCCESS != PFAC_status ){
                 sprintf(msg, "Error: tid %d PFAC_matchFromDevice fails, %s\n", tid, PFAC_getErrorString(PFAC_status));
                 printf("%s", msg);
@@ -412,7 +415,7 @@ int main(int argc, char **argv)
     ref_matched_result = (int *) malloc(sizeof(int)*input_size);
     assert( NULL != ref_matched_result );
         
-    PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size, ref_matched_result ) ;       
+    PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size, ref_matched_result, nullptr ) ;       
     assert( NULL != ref_matched_result ); 
     
     printf("\n ------ compare matched result to reference model ------\n");

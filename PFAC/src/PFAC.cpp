@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -841,7 +843,7 @@ inline void correctTextureMode(PFAC_handle_t handle)
  *  is 256 bytes.  
  */
 PFAC_status_t  PFAC_matchFromDevice( PFAC_handle_t handle, char *d_input_string, size_t input_size,
-    int *d_matched_result )
+    int *d_matched_result, float* time_elapsed_result )
 {
     if ( NULL == handle ){
         return PFAC_STATUS_INVALID_HANDLE ;
@@ -864,12 +866,20 @@ PFAC_status_t  PFAC_matchFromDevice( PFAC_handle_t handle, char *d_input_string,
     
     PFAC_status_t PFAC_status ;
     
+    float time_elapsed = 0;
+
     if ( PFAC_TIME_DRIVEN == handle->perfMode ){
-        PFAC_status = (*(handle->kernel_time_driven_ptr))( handle, d_input_string, input_size, d_matched_result );
+        PFAC_status = (*(handle->kernel_time_driven_ptr))( handle, d_input_string, input_size, d_matched_result, &time_elapsed );
     }else if ( PFAC_SPACE_DRIVEN == handle->perfMode ){
-        PFAC_status = (*(handle->kernel_space_driven_ptr))( handle, d_input_string, input_size, d_matched_result );
+        PFAC_status = (*(handle->kernel_space_driven_ptr))( handle, d_input_string, input_size, d_matched_result, nullptr );
     }else{
         return PFAC_STATUS_INTERNAL_ERROR ;	
+    }
+
+    // printf("\n\n\n\ntime: %f", time_elapsed);
+
+    if(time_elapsed_result != nullptr) {
+        *time_elapsed_result = time_elapsed;
     }
   
     return PFAC_status ;
@@ -877,7 +887,7 @@ PFAC_status_t  PFAC_matchFromDevice( PFAC_handle_t handle, char *d_input_string,
 
 
 PFAC_status_t  PFAC_matchFromHost( PFAC_handle_t handle, char *h_input_string, size_t input_size,
-    int *h_matched_result )
+    int *h_matched_result, float* time_elapsed_result )
 {
     if ( NULL == handle ){
         return PFAC_STATUS_INVALID_HANDLE ;
@@ -937,8 +947,14 @@ PFAC_status_t  PFAC_matchFromHost( PFAC_handle_t handle, char *h_input_string, s
         return PFAC_STATUS_INTERNAL_ERROR ;
     }
 
+    float time_elapsed = 0;
+
     PFAC_status_t PFAC_status = PFAC_matchFromDevice( handle, d_input_string, input_size,
-        d_matched_result ) ;
+        d_matched_result, &time_elapsed ) ;
+    
+    if(time_elapsed_result != nullptr) {
+        *time_elapsed_result = time_elapsed;
+    }
 
     if ( PFAC_STATUS_SUCCESS != PFAC_status ){
         cudaFree(d_input_string);

@@ -18,6 +18,8 @@
  * almost the same as PFAC_kernel.cu except calling space-driven version
  */
 
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +34,7 @@
 extern "C" {
  
 PFAC_status_t  PFAC_kernel_spaceDriven_warpper( 
-    PFAC_handle_t handle, char *d_input_string, size_t input_size, int *d_matched_result ) ;
+    PFAC_handle_t handle, char *d_input_string, size_t input_size, int *d_matched_result, float* time_elapsed_result ) ;
     
 } 
 #endif // __cplusplus
@@ -150,7 +152,8 @@ __host__  PFAC_status_t  PFAC_kernel_spaceDriven_warpper(
     PFAC_handle_t handle, 
     char *d_input_string, 
     size_t input_size,
-    int *d_matched_result )
+    int *d_matched_result,
+    float* time_elapsed_result )
 {
     PFAC_status_t pfac_status = PFAC_STATUS_SUCCESS ;
 

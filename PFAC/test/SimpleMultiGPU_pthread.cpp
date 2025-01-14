@@ -25,6 +25,8 @@
  *
  */
 
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -143,7 +145,7 @@ void *GPU_match(void *para)
     fclose(fpin);    
     
     // step 4: run PFAC on GPU           
-    PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size, h_matched_result ) ;
+    PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size, h_matched_result, nullptr ) ;
     if ( PFAC_STATUS_SUCCESS != PFAC_status ){
         printf("tid[%d]:  Error: fails to PFAC_matchFromHost, %s\n", opts.tid, PFAC_getErrorString(PFAC_status) );
         exit(1) ;	

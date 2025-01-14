@@ -38,6 +38,8 @@
  *
  *
  */
+
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,12 +101,16 @@ int main(int argc, char **argv)
     input_size = fread (h_inputString, 1, input_size, fpin);
     fclose(fpin);    
     
-    // step 4: run PFAC on GPU           
-    PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size, h_matched_result ) ;
+    // step 4: run PFAC on GPU
+
+    float time_elapsed = 0;       
+    PFAC_status = PFAC_matchFromHost( handle, h_inputString, input_size, h_matched_result, &time_elapsed ) ;
     if ( PFAC_STATUS_SUCCESS != PFAC_status ){
         printf("Error: fails to PFAC_matchFromHost, %s\n", PFAC_getErrorString(PFAC_status) );
         exit(1) ;	
-    }     
+    }
+
+    printf("Time Elapsed (final): %f", time_elapsed);
 
     // step 5: output matched result
     for (int i = 0; i < input_size; i++) {

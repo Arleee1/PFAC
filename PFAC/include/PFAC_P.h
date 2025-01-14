@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+
 #include <cuda_runtime.h>
 #include <vector>
 using namespace std ;
@@ -39,7 +41,7 @@ extern "C" {
 #endif   // __cplusplus
 
 typedef PFAC_status_t (*PFAC_kernel_protoType)( PFAC_handle_t handle, char *d_input_string, size_t input_size,
-    int *d_matched_result ) ;
+    int *d_matched_result, float* time_elapsed_result ) ;
 
 typedef PFAC_status_t (*PFAC_reduce_kernel_protoType)( PFAC_handle_t handle, int *d_input_string, int input_size,
         int *d_match_result, int *d_pos, int *h_num_matched, int *h_match_result, int *h_pos ) ; 

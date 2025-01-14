@@ -50,6 +50,8 @@
  * 4. call PFAC_matchFromDevice()
  *
  */
+
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -138,7 +140,7 @@ int main(int argc, char **argv)
     assert( cudaSuccess == cuda_status ); 
           
     // step 4: run PFAC on GPU by calling PFAC_matchFromDevice          
-    PFAC_status = PFAC_matchFromDevice( handle, d_input_string, input_size, d_matched_result ) ;
+    PFAC_status = PFAC_matchFromDevice( handle, d_input_string, input_size, d_matched_result, nullptr ) ;
     if ( PFAC_STATUS_SUCCESS != PFAC_status ){
         printf("Error: PFAC_matchFromDevice failed, %s\n", PFAC_getErrorString(PFAC_status) );
         exit(1) ;	

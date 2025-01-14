@@ -38,6 +38,8 @@
  *                       128 threads per block and 16 paths per thread
  *
  */
+
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,7 +55,7 @@
 extern "C" {
  
 PFAC_status_t  PFAC_kernel_timeDriven_warpper( PFAC_handle_t handle, char *d_input_string, size_t input_size,
-    int *d_matched_result) ;
+    int *d_matched_result, float* time_elapsed_result) ;
 } 
 #endif // __cplusplus
 
@@ -91,7 +93,8 @@ __host__  PFAC_status_t  PFAC_kernel_timeDriven_warpper(
     PFAC_handle_t handle, 
     char *d_input_string, 
     size_t input_size,
-    int *d_matched_result )
+    int *d_matched_result,
+    float* time_elapsed_result)
 {
     cudaError_t cuda_status ;
     PFAC_status_t pfac_status = PFAC_STATUS_SUCCESS;
@@ -185,41 +188,73 @@ __host__  PFAC_status_t  PFAC_kernel_timeDriven_warpper(
         dimGrid.y = p+1 ;
     }
 
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    float timeElapsed = 0;
+
     if (smem_on) {
         if ( texture_on ){
 
             PFAC_PRINTF("PFAC_kernel_timeDriven, tex on, smem on\n");       
-        
+
+            cudaEventRecord(start, 0);
+
             PFAC_kernel_timeDriven<THREAD_BLOCK_SIZE, EXTRA_SIZE_PER_TB, 1, 1> <<< dimGrid, dimBlock >>>(
                 handle->d_PFAC_table, (int*)d_input_string, input_size, 
-                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );   
+                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );
+            
+            cudaEventRecord(stop, 0);
+            cudaEventSynchronize(stop);
         }else{
         
             PFAC_PRINTF("PFAC_kernel_timeDriven, tex off, smem on\n");    
-        
+
+            cudaEventRecord(start, 0);
+
             PFAC_kernel_timeDriven<THREAD_BLOCK_SIZE, EXTRA_SIZE_PER_TB, 0, 1> <<< dimGrid, dimBlock >>>(
                 handle->d_PFAC_table, (int*)d_input_string, input_size, 
-                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );           
+                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );
+
+            cudaEventRecord(stop, 0);
+            cudaEventSynchronize(stop);       
         }
     }else{
         if ( texture_on ){
 
-            PFAC_PRINTF("PFAC_kernel_timeDriven, tex on, smem off\n");    
+            PFAC_PRINTF("PFAC_kernel_timeDriven, tex on, smem off\n");
+
+            cudaEventRecord(start, 0);  
 
             PFAC_kernel_timeDriven<THREAD_BLOCK_SIZE, EXTRA_SIZE_PER_TB, 1, 0> <<< dimGrid, dimBlock >>>(
                 handle->d_PFAC_table, (int*)d_input_string, input_size, 
-                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );   
+                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );
+            
+            cudaEventRecord(stop, 0);
+            cudaEventSynchronize(stop);
         }else{
 
-            PFAC_PRINTF("PFAC_kernel_timeDriven, tex off, smem off\n");            
+            PFAC_PRINTF("PFAC_kernel_timeDriven, tex off, smem off\n");
+
+            cudaEventRecord(start, 0);        
 
             PFAC_kernel_timeDriven<THREAD_BLOCK_SIZE, EXTRA_SIZE_PER_TB, 0, 0> <<< dimGrid, dimBlock >>>(
                 handle->d_PFAC_table, (int*)d_input_string, input_size, 
-                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );   
+                n_hat, num_finalState, initial_state, num_blocks-1, d_matched_result );
+            
+            cudaEventRecord(stop, 0);
+            cudaEventSynchronize(stop);
         }    
     }
 
+    cudaEventElapsedTime(&timeElapsed, start, stop);
+
+    if(time_elapsed_result != nullptr) {
+        *time_elapsed_result = timeElapsed;
+    }
+
     cuda_status = cudaGetLastError() ;
+
 
     if ( texture_on ){
         // #### lock mutex, only one thread can unbind texture
