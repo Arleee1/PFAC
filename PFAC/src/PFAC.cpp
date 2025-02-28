@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing, and to make filename for reading patterns constant
 
 
 #include <stdio.h>
@@ -652,7 +652,7 @@ PFAC_status_t  PFAC_createHashTable( PFAC_handle_t handle )
 /*
  *  if return status is not PFAC_STATUS_SUCCESS, then all reousrces are free.
  */
-PFAC_status_t  PFAC_readPatternFromFile( PFAC_handle_t handle, char *filename )
+PFAC_status_t  PFAC_readPatternFromFile( PFAC_handle_t handle, const char *filename )
 {
     if ( NULL == handle ){
         return PFAC_STATUS_INVALID_HANDLE ;

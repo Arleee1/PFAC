@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing, and to make filename for reading patterns constant
 
 #include <stdio.h>
 
@@ -165,7 +165,7 @@ PFAC_status_t  PFAC_dumpTransitionTable( PFAC_handle_t handle, FILE *fp ) ;
  *  PFAC_STATUS_INTERNAL_ERROR      please report bugs
  *  
  */
-PFAC_status_t  PFAC_readPatternFromFile( PFAC_handle_t handle, char *filename ) ;
+PFAC_status_t  PFAC_readPatternFromFile( PFAC_handle_t handle, const char *filename ) ;
 
 /*
  *  return

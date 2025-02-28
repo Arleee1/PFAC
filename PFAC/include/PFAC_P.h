@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing
+// Modified by Arleee1 (Ethan Ermovick) to enable kernel timing, and to make filename for reading patterns constant
 
 #include <cuda_runtime.h>
 #include <vector>
@@ -204,7 +204,7 @@ int dump_reorderPattern( char** rowPtr, int *patternID_table, int *patternLen_ta
  *  (6) *max_state_num_ptr = estimation (upper bound) of total states in PFAC DFA
  *
  */
-PFAC_status_t parsePatternFile( char *patternFileName, char ***rowPtr, char **patternPool,
+PFAC_status_t parsePatternFile( const char *patternFileName, char ***rowPtr, char **patternPool,
     int **patternID_table_ptr, int **patternLen_table_ptr, int *max_state_num_ptr, int *pattern_num_ptr ) ;
 
 
