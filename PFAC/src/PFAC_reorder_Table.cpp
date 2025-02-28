@@ -118,7 +118,7 @@ void printString( char *s, const int n, FILE* fp )
  *  (6) *max_state_num_ptr = estimation (upper bound) of total states in PFAC DFA
  *
  */
-PFAC_status_t parsePatternFile( char *patternfilename,
+PFAC_status_t parsePatternFile( const char *patternfilename,
     char ***rowPtr, char **valPtr, int **patternID_table_ptr, int **patternLen_table_ptr,
     int *max_state_num_ptr, int *pattern_num_ptr )
 {
